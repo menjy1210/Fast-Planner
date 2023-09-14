@@ -1,0 +1,7 @@
+Fast_planner/plan_manage/src/planner_manager
+    - FastPlannerManager::kinodynamicReplan() the exact file to replan
+    -- used in plan_manage/src/kino_replan_fsm.cpp line 310
+    -- 
+
+Fast_planner/plan_manage/src/kino_replan_fsm.cpp
+- subscribe to topic 'waypoint_generator/waypoints'
