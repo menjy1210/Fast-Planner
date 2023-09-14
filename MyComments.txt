@@ -9,4 +9,9 @@ Fast_planner/plan_manage/src/kino_replan_fsm.cpp
 fast_planner/plan_env/src/edt_environment.cpp
 - to check for collision
 - find the distance to the nearest obstacles
-- use sdf_map.cpp in edt_environment.cpp to 
+- use sdf_map.cpp in edt_environment.cpp as the map type
+- the specific functions under this class:
+-- init()
+-- prediction-related(): i guess, this is for dynamic edt_environment
+    - one thing to mention, the variable 'time' is quite important for the dynamic case
+-- distance-related()
