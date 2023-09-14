@@ -37,7 +37,7 @@ void EDTEnvironment::setMap(shared_ptr<SDFMap> map) {
 }
 
 void EDTEnvironment::setObjPrediction(ObjPrediction prediction) {
-  this->obj_prediction_ = prediction;
+  this->obj_prediction_ = prediction; //ObjPrediction obj_prediction_
 }
 
 void EDTEnvironment::setObjScale(ObjScale scale) {
@@ -118,7 +118,7 @@ pair<double, Eigen::Vector3d> EDTEnvironment::evaluateEDTWithGrad(const Eigen::V
 }
 
 double EDTEnvironment::evaluateCoarseEDT(Eigen::Vector3d& pos, double time) {
-  double d1 = sdf_map_->getDistance(pos);
+  double d1 = sdf_map_->getDistance(pos); // SDFMap::Ptr sdf_map_, defined in the same package plan_env
   if (time < 0.0) {
     return d1;
   } else {
