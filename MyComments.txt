@@ -15,3 +15,11 @@ fast_planner/plan_env/src/edt_environment.cpp
 -- prediction-related(): i guess, this is for dynamic edt_environment
     - one thing to mention, the variable 'time' is quite important for the dynamic case
 -- distance-related()
+
+fast_planner/plan_env/raycast.cpp
+- to check for collisions
+    - casting a ray from the point and count the number of times it intersects with the polygon boundary
+    -- if the number of intersections is odd, the point is inside the polygon
+    -- if the number of intersections is even, the point is outside the polygon
+- maybe fit for finding the line-of-sight (LOS) angle and time-to-collision (trajectory)
+    - [to-do] implemented in 3D, in Python 
