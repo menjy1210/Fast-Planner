@@ -21,7 +21,7 @@
 * along with Fast-Planner. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+// the class object is initialized in sdf_map.cpp line 498
 
 #include <Eigen/Eigen>
 #include <cmath>
@@ -29,19 +29,38 @@
 #include <plan_env/raycast.h>
 
 int signum(int x) {
-  return x == 0 ? 0 : x < 0 ? -1 : 1;
+  /*
+  to keep the sign of x, y, z component of the direction vector
+  */
+  return x == 0 ? 0 : x < 0 ? -1 : 1; 
+  // if x = 0, return 0
+  // if x < 0, return -1
+  // if x > 0, return 1
 }
 
 double mod(double value, double modulus) {
   return fmod(fmod(value, modulus) + modulus, modulus);
+  // The fmod function 
+  // calculates the floating-point remainder f of x / y such that x = i * y + f, 
+  // where i is an integer, f has the same sign as x , and the absolute value of f is less than the absolute value of y.
+
+  // 
 }
 
 double intbound(double s, double ds) {
-  // Find the smallest positive t such that s+t*ds is an integer.
-  if (ds < 0) {
+  /*
+  Find the smallest positive t such that s+t*ds is an integer.
+
+  s + t * ds
+   - s is the start point
+   - ds is the direction from the start to end
+
+  make sure that t is positive
+  */
+  if (ds < 0) { // end.x < start.x
     return intbound(-s, -ds);
-  } else {
-    s = mod(s, 1);
+  } else { // end.x > start.x
+    s = mod(s, 1); // the resulted s < 1
     // problem is now s+t*ds = 1
     return (1 - s) / ds;
   }
@@ -67,6 +86,18 @@ void Raycast(const Eigen::Vector3d& start, const Eigen::Vector3d& end, const Eig
   // if we took a step sufficient to cross a cube boundary along that axis
   // (i.e. change the integer part of the coordinate) in the variables
   // tMaxX, tMaxY, and tMaxZ.
+
+  /*
+  [input]
+  start (vector)
+  end (vector)
+  min (vector)
+  max (vector)
+  output_points_cnt (scalar)
+  output (vector)
+
+  [output]
+  */
 
   // Cube containing origin point.
   int x = (int)std::floor(start.x());
@@ -95,12 +126,12 @@ void Raycast(const Eigen::Vector3d& start, const Eigen::Vector3d& end, const Eig
   double tMaxZ = intbound(start.z(), dz);
 
   // The change in t when taking a step (always positive).
-  double tDeltaX = ((double)stepX) / dx;
-  double tDeltaY = ((double)stepY) / dy;
-  double tDeltaZ = ((double)stepZ) / dz;
+  double tDeltaX = ((double)stepX) / dx; // |1/dx|
+  double tDeltaY = ((double)stepY) / dy; // |1/dy|
+  double tDeltaZ = ((double)stepZ) / dz; // |1/dz|
 
   // Avoids an infinite loop.
-  if (stepX == 0 && stepY == 0 && stepZ == 0) return;
+  if (stepX == 0 && stepY == 0 && stepZ == 0) return; // start and end are at the same position
 
   double dist = 0;
   while (true) {
@@ -113,7 +144,7 @@ void Raycast(const Eigen::Vector3d& start, const Eigen::Vector3d& end, const Eig
       dist = sqrt((x - start(0)) * (x - start(0)) + (y - start(1)) * (y - start(1)) +
                   (z - start(2)) * (z - start(2)));
 
-      if (dist > maxDist) return;
+      if (dist > maxDist) return; // break the loop until 
 
       /*            if (output_points_cnt > 1500) {
                       std::cerr << "Error, too many racyast voxels." <<
@@ -253,6 +284,12 @@ void Raycast(const Eigen::Vector3d& start, const Eigen::Vector3d& end, const Eig
 bool RayCaster::setInput(const Eigen::Vector3d& start,
                          const Eigen::Vector3d& end /* , const Eigen::Vector3d& min,
                          const Eigen::Vector3d& max */) {
+  /*
+  ---input---
+  start
+  end
+  */
+  
   start_ = start;
   end_ = end;
   // max_ = max;
@@ -284,7 +321,7 @@ bool RayCaster::setInput(const Eigen::Vector3d& start,
   tMaxZ_ = intbound(start_.z(), dz_);
 
   // The change in t when taking a step (always positive).
-  tDeltaX_ = ((double)stepX_) / dx_;
+  tDeltaX_ = ((double)stepX_) / dx_; // 1/(end_point - start_point)
   tDeltaY_ = ((double)stepY_) / dy_;
   tDeltaZ_ = ((double)stepZ_) / dz_;
 
@@ -300,16 +337,21 @@ bool RayCaster::setInput(const Eigen::Vector3d& start,
 }
 
 bool RayCaster::step(Eigen::Vector3d& ray_pt) {
+  /*
+    if the start has reached the end point， return false
+    if the start has not reached the end point, increment the t-value and return true
+  */
+
   // if (x_ >= min_.x() && x_ < max_.x() && y_ >= min_.y() && y_ < max_.y() &&
   // z_ >= min_.z() && z_ <
   // max_.z())
-  ray_pt = Eigen::Vector3d(x_, y_, z_);
+  ray_pt = Eigen::Vector3d(x_, y_, z_); // the starting point
 
   // step_num_++;
 
   // dist_ = (Eigen::Vector3d(x_, y_, z_) - start_).squaredNorm();
 
-  if (x_ == endX_ && y_ == endY_ && z_ == endZ_) {
+  if (x_ == endX_ && y_ == endY_ && z_ == endZ_) {  // the casted ray has reached the end
     return false;
   }
 

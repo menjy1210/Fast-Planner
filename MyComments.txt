@@ -1,10 +1,33 @@
+Fast_planner/fast_planner/plan_manage/launch
+- rviz.launch: the settings of rviz by the file traj.rviz
+- kino_replan.launch
+    - kino_algorithm.xml
+    - simulator.xml
+        - map_generator/random_forest
+    - plan_manage/traj_server
+    - waypoint_generator/waypoint_generator
+        - publish to 'waypoints'
+        - subscribe from 'traj_start_trigger': /move_base_simple/goal
+
+
 Fast_planner/plan_manage/src/planner_manager
 - FastPlannerManager::kinodynamicReplan() the exact file to replan
 -- used in plan_manage/src/kino_replan_fsm.cpp line 310
 -- 
 
+
+Fast_planner/fast_planner/plan_env
+- the function: mapping
+- [input]
+    - (raw data) depth image/point cloud
+    - (odometry) camera pose
+- [output] through raycasting
+    - probabilistic volumetric map -> ESDF
+
+
 Fast_planner/plan_manage/src/kino_replan_fsm.cpp
 - subscribe to topic 'waypoint_generator/waypoints'
+
 
 fast_planner/plan_env/src/edt_environment.cpp
 - to check for collision
@@ -16,6 +39,7 @@ fast_planner/plan_env/src/edt_environment.cpp
     - one thing to mention, the variable 'time' is quite important for the dynamic case
 -- distance-related()
 
+
 fast_planner/plan_env/raycast.cpp
 - to check for collisions
     - casting a ray from the point and count the number of times it intersects with the polygon boundary
@@ -23,3 +47,7 @@ fast_planner/plan_env/raycast.cpp
     -- if the number of intersections is even, the point is outside the polygon
 - maybe fit for finding the line-of-sight (LOS) angle and time-to-collision (trajectory)
     - [to-do] implemented in 3D, in Python 
+
+
+trajectory time-duration: 0.01s
+safety check frequency: 0.05s

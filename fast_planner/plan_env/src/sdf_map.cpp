@@ -487,7 +487,7 @@ void SDFMap::raycastProcess() {
   double length;
 
   // bounding box of updated region
-  double min_x = mp_.map_max_boundary_(0);
+  double min_x = mp_.map_max_boundary_(0); // mp_: struct MappingParameters
   double min_y = mp_.map_max_boundary_(1);
   double min_z = mp_.map_max_boundary_(2);
 
@@ -495,12 +495,12 @@ void SDFMap::raycastProcess() {
   double max_y = mp_.map_min_boundary_(1);
   double max_z = mp_.map_min_boundary_(2);
 
-  RayCaster raycaster;
+   raycaster;
   Eigen::Vector3d half = Eigen::Vector3d(0.5, 0.5, 0.5);
   Eigen::Vector3d ray_pt, pt_w;
 
   for (int i = 0; i < md_.proj_points_cnt; ++i) {
-    pt_w = md_.proj_points_[i];
+    pt_w = md_.proj_points_[i]; //md_: struct MappingData
 
     // set flag for projected point
 
